@@ -1,3 +1,4 @@
+import { Skeleton } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useSWR from "swr";
 import { LocationData } from "../lib/types";
@@ -15,7 +16,7 @@ export default function Counties({
   const [list, setList] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState("");
 
-  const { data } = useSWR<LocationData[]>("/api/counties");
+  const { data, isValidating } = useSWR<LocationData[]>("/api/counties");
 
   useEffect(() => {
     setList(
@@ -39,6 +40,11 @@ export default function Counties({
       value={selectedItem}
       onChange={setSelectedItem}
       limit={10}
+      loading={isValidating}
+      onClear={() => {
+        setSelectedItem("");
+        setSelectedCounty(undefined);
+      }}
     />
   );
 }

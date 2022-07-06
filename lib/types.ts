@@ -30,3 +30,11 @@ export interface StationData {
   elevationUnit: string;
   longitude: number;
 }
+
+export interface ClimateData {
+  date: string;
+  datatype: string;
+  station: string;
+  attributes: string;
+  value: number;
+}

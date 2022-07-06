@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { NcdcNoaaApi, LocationData } from "../../lib/types";
+import { ClimateData, NcdcNoaaApi } from "../../lib/types";
 
 export default async function handler(
-  _req: NextApiRequest,
-  res: NextApiResponse<LocationData[]>
+  req: NextApiRequest,
+  res: NextApiResponse<ClimateData[]>
 ) {
+  const stationId = req.query.id;
   const token = process.env.NCDC_NOAA_TOKEN as string;
   const init: RequestInit = {
     method: "GET",
@@ -23,14 +24,14 @@ export default async function handler(
     .toISOString()
     .split("T")[0];
 
-  const baseUrl = `https://www.ncei.noaa.gov/cdo-web/api/v2/locations?locationcategoryid=CNTY&datasetid=GSOM&datacategoryid=TEMP&startdate=${startDate}&enddate=${endDate}`;
+  const baseUrl = `https://www.ncei.noaa.gov/cdo-web/api/v2/data?stationid=${stationId}&datasetid=GSOM&startdate=${startDate}&enddate=${endDate}&datatypeid=TMAX,TMIN,EMNT,EMAX,TAVG`;
 
   const response = await fetch(`${baseUrl}&limit=1`, init);
 
-  const data = (await response.json()) as NcdcNoaaApi<LocationData>;
+  const data = (await response.json()) as NcdcNoaaApi<ClimateData>;
 
   const count = data.metadata.resultset.count;
-  const limit = 1000;
+  const limit = 500;
   const pageCount = Math.ceil(count / limit);
 
   const urls: string[] = [];
@@ -41,9 +42,9 @@ export default async function handler(
   const requests = urls.map((url) => fetch(url, init));
   const responses = await Promise.all(requests);
   const json = responses.map((response) => response.json());
-  const allData = (await Promise.all(json)) as NcdcNoaaApi<LocationData>[];
+  const allData = (await Promise.all(json)) as NcdcNoaaApi<ClimateData>[];
 
-  const locations = allData.reduce<LocationData[]>((pv, cv) => {
+  const locations = allData.reduce<ClimateData[]>((pv, cv) => {
     return Boolean(cv?.results?.length) ? [...pv, ...cv.results] : pv;
   }, []);
 

@@ -1,3 +1,4 @@
+import { Skeleton } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useSWR from "swr";
 import { StationData } from "../lib/types";
@@ -14,7 +15,7 @@ export default function Stations({
 }: StationsProps) {
   const [list, setList] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState("");
-  const { data } = useSWR<StationData[]>(() =>
+  const { data, isValidating } = useSWR<StationData[]>(() =>
     countyId ? `/api/stations?id=${countyId}` : null
   );
 
@@ -38,6 +39,11 @@ export default function Stations({
       value={selectedItem}
       onChange={setSelectedItem}
       limit={10}
+      loading={isValidating}
+      onClear={() => {
+        setSelectedItem("");
+        setSelectedStation(undefined);
+      }}
     />
   );
 }

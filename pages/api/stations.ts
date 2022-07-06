@@ -46,7 +46,7 @@ export default async function handler(
   const allData = (await Promise.all(json)) as NcdcNoaaApi<StationData>[];
 
   const locations = allData.reduce<StationData[]>((pv, cv) => {
-    return cv.results.length > 0 ? [...pv, ...cv.results] : pv;
+    return Boolean(cv?.results?.length) ? [...pv, ...cv.results] : pv;
   }, []);
 
   res.status(200).json(locations);

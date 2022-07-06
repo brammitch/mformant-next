@@ -1,3 +1,4 @@
+import { Skeleton } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useSWR from "swr";
 import { LocationData, NcdcNoaaApi } from "../lib/types";
@@ -11,7 +12,8 @@ export default function States({ setSelectedState }: StatesProps) {
   const [list, setList] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState("");
 
-  const { data } = useSWR<NcdcNoaaApi<LocationData>>("/api/states");
+  const { data, isValidating } =
+    useSWR<NcdcNoaaApi<LocationData>>("/api/states");
 
   useEffect(
     () => setList(data?.results?.map((state) => state.name) ?? []),
@@ -34,6 +36,11 @@ export default function States({ setSelectedState }: StatesProps) {
       value={selectedItem}
       onChange={setSelectedItem}
       limit={10}
+      loading={isValidating}
+      onClear={() => {
+        setSelectedItem("");
+        setSelectedState(undefined);
+      }}
     />
   );
 }

@@ -1,7 +1,20 @@
-import { Autocomplete, AutocompleteProps } from "@mantine/core";
+import {
+  ActionIcon,
+  Autocomplete,
+  AutocompleteProps,
+  Loader,
+} from "@mantine/core";
+import { X } from "tabler-icons-react";
 import { useAppColors } from "../hooks/useAppColors";
 
-export default function ControlledAutocomplete(props: AutocompleteProps) {
+interface ControlledAutocompleteProps extends AutocompleteProps {
+  loading?: boolean;
+  onClear: () => void;
+}
+
+export default function ControlledAutocomplete(
+  props: ControlledAutocompleteProps
+) {
   const { color } = useAppColors();
 
   return (
@@ -13,6 +26,16 @@ export default function ControlledAutocomplete(props: AutocompleteProps) {
       onChange={props.onChange}
       limit={props.limit}
       labelProps={{ style: { color } }}
+      rightSection={
+        props.loading ? (
+          <Loader size="xs" />
+        ) : (
+          <ActionIcon variant="transparent" onClick={props.onClear}>
+            <X size={12} />
+          </ActionIcon>
+        )
+      }
+      disabled={props.loading}
     />
   );
 }
