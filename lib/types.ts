@@ -11,10 +11,22 @@ export interface NcdcNoaaApi<T> {
   results: T[];
 }
 
-export interface StatesData {
+export interface LocationData {
   mindate: string;
   maxdate: string;
   name: string;
   datacoverage: number;
   id: string;
+}
+
+export interface StationData {
+  elevation: number;
+  mindate: string;
+  maxdate: string;
+  latitude: number;
+  name: string;
+  datacoverage: number;
+  id: string;
+  elevationUnit: string;
+  longitude: number;
 }

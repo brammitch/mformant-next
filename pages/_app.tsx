@@ -7,9 +7,11 @@ import { useColorScheme } from "@mantine/hooks";
 import { ThemeProvider, useTheme } from "next-themes";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
+import { SWRConfig } from "swr";
+import fetcher from "../lib/fetcher";
 import "../styles/globals.css"; // Can only import global stylesheets here
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const preferredColorScheme = useColorScheme();
   const { theme } = useTheme();
 
@@ -35,11 +37,13 @@ function MyApp({ Component, pageProps }: AppProps) {
           withGlobalStyles
           withNormalizeCSS
         >
-          <Component {...pageProps} />
+          <SWRConfig value={{ fetcher }}>
+            <Component {...pageProps} />
+          </SWRConfig>
         </MantineProvider>
       </ColorSchemeProvider>
     </ThemeProvider>
   );
 }
 
-export default MyApp;
+export default App;

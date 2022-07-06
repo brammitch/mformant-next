@@ -1,15 +1,20 @@
-import { ActionIcon } from "@mantine/core";
+import {
+  ActionIcon,
+  AppShell,
+  Burger,
+  Container,
+  Footer,
+  Header,
+  MediaQuery,
+  Navbar,
+} from "@mantine/core";
 import { useTheme } from "next-themes";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "tabler-icons-react";
-import utilStyles from "../styles/utils.module.css";
-import styles from "./layout.module.css";
-
-const name = "mFormant Consulting";
-
+import { useAppColors } from "../hooks/useAppColors";
 interface LayoutProps {
   children: React.ReactNode;
   home?: boolean;
@@ -17,9 +22,9 @@ interface LayoutProps {
 
 export default function Layout({ children, home }: LayoutProps) {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
-
-  const dark = theme === "dark";
+  const [opened, setOpened] = useState(false);
+  const { backgroundColor, color, isDark } = useAppColors();
+  const { setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -30,46 +35,93 @@ export default function Layout({ children, home }: LayoutProps) {
   }
 
   return (
-    <div className={styles.container}>
+    <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
         <title>mFormant Consuting homepage</title>
       </Head>
-      <header className={styles.header}>
-        <ActionIcon
-          variant="outline"
-          color={dark ? "yellow" : "gray"}
-          onClick={() => setTheme(dark ? "light" : "dark")}
-          title="Toggle color scheme"
-        >
-          {dark ? <Sun size={18} /> : <Moon size={18} />}
-        </ActionIcon>
-        {home ? (
-          <Image
-            className={styles.title}
-            src="/mformant.png"
-            alt="mFormant Logo"
-            width={571}
-            height={138}
-          />
-        ) : (
-          <>
-            <h2 className={utilStyles.headingLg}>
-              <Link href="/">
-                <a className={utilStyles.colorInherit}>{name}</a>
-              </Link>
-            </h2>
-          </>
-        )}
-      </header>
-      <main>{children}</main>
-      {!home && (
-        <div className={styles.backToHome}>
-          <Link href="/">
-            <a>← Back to home</a>
-          </Link>
-        </div>
-      )}
-    </div>
+      <AppShell
+        styles={{ main: { backgroundColor: "inherit", color: "inherit" } }}
+        navbarOffsetBreakpoint="sm"
+        asideOffsetBreakpoint="sm"
+        fixed
+        padding="md"
+        navbar={
+          <Navbar
+            p="md"
+            hiddenBreakpoint="sm"
+            hidden={!opened}
+            width={{ sm: 200, lg: 300 }}
+            style={{
+              backgroundColor: !opened ? "inherit" : backgroundColor,
+              color: "inherit",
+              opacity: 1,
+            }}
+          >
+            <Link href="/">
+              <a>Home</a>
+            </Link>
+            <Link href="/features/climate">
+              <a>Climate</a>
+            </Link>
+          </Navbar>
+        }
+        header={
+          <Header
+            height={60}
+            p="xs"
+            style={{ backgroundColor: "inherit", color: "inherit" }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Burger
+                  opened={opened}
+                  onClick={() => setOpened((o) => !o)}
+                  size="sm"
+                  color={color}
+                  mr="xl"
+                />
+              </MediaQuery>
+              <Image
+                src="/mformant-icon.png"
+                alt="mFormant Icon"
+                width={28}
+                height={28}
+              />
+              <ActionIcon
+                variant="outline"
+                color={isDark ? "yellow" : "gray"}
+                onClick={() => setTheme(isDark ? "light" : "dark")}
+                title="Toggle color scheme"
+              >
+                {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              </ActionIcon>
+            </div>
+          </Header>
+        }
+        footer={
+          <Footer
+            height={60}
+            p="md"
+            style={{ backgroundColor: "inherit", color: "inherit" }}
+          >
+            mFormant Consulting, LLC
+          </Footer>
+        }
+      >
+        <Container>{children}</Container>
+      </AppShell>
+    </>
   );
 }

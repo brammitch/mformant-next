@@ -1,10 +1,9 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { NcdcNoaaApi, StatesData } from "../../lib/types";
+import { NcdcNoaaApi, LocationData } from "../../lib/types";
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<NcdcNoaaApi<StatesData>>
+  _req: NextApiRequest,
+  res: NextApiResponse<NcdcNoaaApi<LocationData>>
 ) {
   const token = process.env.NCDC_NOAA_TOKEN as string;
   const response = await fetch(
