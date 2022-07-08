@@ -35,7 +35,7 @@ export default function ControlledAutocomplete(
           </ActionIcon>
         )
       }
-      disabled={props.loading}
+      disabled={props.loading || props.disabled}
     />
   );
 }

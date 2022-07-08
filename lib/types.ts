@@ -1,3 +1,4 @@
+/* NCDC/NOAA API */
 interface Metadata {
   resultset: {
     offset: number;
@@ -31,10 +32,148 @@ export interface StationData {
   longitude: number;
 }
 
+export type ClimateDataType = "TMAX" | "TMIN" | "EMNT" | "EMXT" | "TAVG";
+
 export interface ClimateData {
   date: string;
-  datatype: string;
+  datatype: ClimateDataType;
   station: string;
   attributes: string;
   value: number;
+}
+
+/* Weather.gov API */
+
+interface BaseContextObject {
+  "@version": string;
+  wx: string;
+  geo: string;
+  unit: string;
+  "@vocab": string;
+}
+
+interface PointContextObject extends BaseContextObject {
+  geometry: {
+    "@id": string;
+    "@type": string;
+  };
+  city: string;
+  state: string;
+  distance: {
+    "@id": string;
+    "@type": string;
+  };
+  bearing: {
+    "@type": string;
+  };
+  value: {
+    "@id": string;
+  };
+  unitCode: {
+    "@id": string;
+    "@type": string;
+  };
+  forecastOffice: {
+    "@type": string;
+  };
+  forecastGridData: {
+    "@type": string;
+  };
+  publicZone: {
+    "@type": string;
+  };
+  county: {
+    "@type": string;
+  };
+}
+
+type PointContext = [string, PointContextObject];
+
+export interface PointData {
+  "@context": PointContext;
+  id: string;
+  type: string;
+  geometry: {
+    type: string;
+    coordinates: [number, number];
+  };
+  properties: {
+    "@id": string;
+    "@type": string;
+    cwa: string;
+    forecastOffice: string;
+    gridId: string;
+    gridX: number;
+    gridY: number;
+    forecast: string;
+    forecastHourly: string;
+    forecastGridData: string;
+    observationStations: string;
+    relativeLocation: {
+      type: string;
+      geometry: {
+        type: string;
+        coordinates: [number, number];
+      };
+      properties: {
+        city: string;
+        state: string;
+        distance: {
+          unitCode: string;
+          value: number;
+        };
+        bearing: {
+          unitCode: string;
+          value: number;
+        };
+      };
+    };
+    forecastZone: string;
+    county: string;
+    fireWeatherZone: string;
+    timeZone: string;
+    radarStation: string;
+  };
+}
+
+type ForecastContext = [string, BaseContextObject];
+
+export interface ForecastPeriod {
+  number: number;
+  name: string;
+  startTime: string;
+  endTime: string;
+  isDaytime: boolean;
+  temperature: number;
+  temperatureUnit: string;
+  temperatureTrend: null;
+  windSpeed: string;
+  windDirection: string;
+  icon: string;
+  shortForecast: string;
+  detailedForecast: string;
+}
+
+type ForecastCoordinates = [number, number][][];
+
+export interface ForecastData {
+  "@context": ForecastContext;
+  type: string;
+  geometry: {
+    type: string;
+    coordinates: ForecastCoordinates;
+  };
+  properties: {
+    updated: string;
+    units: string;
+    forecastGenerator: string;
+    generatedAt: string;
+    updateTime: string;
+    validTimes: string;
+    elevation: {
+      unitCode: string;
+      value: number;
+    };
+    periods: ForecastPeriod[];
+  };
 }

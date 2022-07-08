@@ -33,7 +33,13 @@ export default function Stations({
 
   return (
     <ControlledAutocomplete
-      placeholder={list[0] ?? "Station"}
+      placeholder={
+        isValidating
+          ? "Station"
+          : list.length > 0
+          ? list[0]
+          : "No stations available for the selected county"
+      }
       label="Station"
       data={list}
       value={selectedItem}
@@ -44,6 +50,7 @@ export default function Stations({
         setSelectedItem("");
         setSelectedStation(undefined);
       }}
+      disabled={!isValidating && list.length === 0}
     />
   );
 }

@@ -24,21 +24,23 @@ export default async function handler(
     .toISOString()
     .split("T")[0];
 
-  const baseUrl = `https://www.ncei.noaa.gov/cdo-web/api/v2/data?stationid=${stationId}&datasetid=GSOM&startdate=${startDate}&enddate=${endDate}&datatypeid=TMAX,TMIN,EMNT,EMAX,TAVG`;
+  const baseUrl = `https://www.ncei.noaa.gov/cdo-web/api/v2/data?stationid=${stationId}&datasetid=GSOM&startdate=${startDate}&enddate=${endDate}&datatypeid=TMAX,TMIN,EMNT,EMXT,TAVG&units=standard`;
 
   const response = await fetch(`${baseUrl}&limit=1`, init);
 
   const data = (await response.json()) as NcdcNoaaApi<ClimateData>;
 
-  const count = data.metadata.resultset.count;
+  const count = data?.metadata?.resultset?.count ?? 0;
+  if (count === 0) return res.status(200).json([]);
+
   const limit = 500;
   const pageCount = Math.ceil(count / limit);
-
   const urls: string[] = [];
 
   for (let page = 1; page <= pageCount; page++) {
     urls.push(`${baseUrl}&offset=${(page - 1) * limit}&limit=${limit}`);
   }
+
   const requests = urls.map((url) => fetch(url, init));
   const responses = await Promise.all(requests);
   const json = responses.map((response) => response.json());

@@ -29,15 +29,17 @@ export default async function handler(
 
   const data = (await response.json()) as NcdcNoaaApi<LocationData>;
 
-  const count = data.metadata.resultset.count;
+  const count = data?.metadata?.resultset?.count ?? 0;
+  if (count === 0) return res.status(200).json([]);
+
   const limit = 1000;
   const pageCount = Math.ceil(count / limit);
-
   const urls: string[] = [];
 
   for (let page = 1; page <= pageCount; page++) {
     urls.push(`${baseUrl}&offset=${(page - 1) * limit}&limit=${limit}`);
   }
+
   const requests = urls.map((url) => fetch(url, init));
   const responses = await Promise.all(requests);
   const json = responses.map((response) => response.json());

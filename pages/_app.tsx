@@ -37,7 +37,14 @@ function App({ Component, pageProps }: AppProps) {
           withGlobalStyles
           withNormalizeCSS
         >
-          <SWRConfig value={{ fetcher }}>
+          <SWRConfig
+            value={{
+              fetcher,
+              revalidateIfStale: false,
+              revalidateOnFocus: false,
+              revalidateOnReconnect: false,
+            }}
+          >
             <Component {...pageProps} />
           </SWRConfig>
         </MantineProvider>
