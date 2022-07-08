@@ -8,11 +8,10 @@ export default async function handler(
   console.log("req.query:", req.query);
   const countyId = req.query.id;
   const token = process.env.NCDC_NOAA_TOKEN as string;
+  const headers = new Headers({ token });
   const init: RequestInit = {
     method: "GET",
-    headers: {
-      token,
-    },
+    headers,
   };
 
   const today = new Date();

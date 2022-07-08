@@ -1,4 +1,5 @@
 /* NCDC/NOAA API */
+
 interface Metadata {
   resultset: {
     offset: number;
@@ -43,6 +44,15 @@ export interface ClimateData {
 }
 
 /* Weather.gov API */
+
+export interface WeatherApiError {
+  correlationId: string; // '3b5f6e65',
+  title: string; // 'Unexpected Problem',
+  type: string; // 'https://api.weather.gov/problems/UnexpectedProblem',
+  status: number; // 500,
+  detail: string; // 'An unexpected problem has occurred.',
+  instance: string; // 'https://api.weather.gov/requests/3b5f6e65'
+}
 
 interface BaseContextObject {
   "@version": string;
@@ -177,3 +187,6 @@ export interface ForecastData {
     periods: ForecastPeriod[];
   };
 }
+
+export type ForecastDataOrError = ForecastData | WeatherApiError;
+export type ForcastPeriodsOrError = ForecastPeriod[] | WeatherApiError;

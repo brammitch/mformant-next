@@ -7,11 +7,10 @@ export default async function handler(
 ) {
   const stationId = req.query.id;
   const token = process.env.NCDC_NOAA_TOKEN as string;
+  const headers = new Headers({ token });
   const init: RequestInit = {
     method: "GET",
-    headers: {
-      token,
-    },
+    headers,
   };
 
   const today = new Date();

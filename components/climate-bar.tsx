@@ -1,10 +1,13 @@
-import { ClimateData, ForecastPeriod } from "../lib/types";
-import dynamic from "next/dynamic";
 import { BarTrace, BaseTrace } from "@brammitch/plotly-react";
 import uniq from "lodash.uniq";
+import dynamic from "next/dynamic";
+import { ClimateData, ForecastPeriod } from "../lib/types";
 
 const DoubleBar = dynamic(
-  () => import("@brammitch/plotly-react/dist/charts/DoubleBar")
+  () => import("@brammitch/plotly-react/dist/charts/DoubleBar"),
+  {
+    ssr: false,
+  }
 );
 
 interface ClimateBarProps {
@@ -132,6 +135,7 @@ export default function ClimateBar(props: ClimateBarProps) {
     <DoubleBar
       b1={b1}
       b2={b2}
+      layoutProps={{ hovermode: "x" }}
       max={120}
       range={range}
       t1={t1}
