@@ -42,7 +42,7 @@ export default function Layout({ children, home }: LayoutProps) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        <title>mFormant Consuting homepage</title>
+        <title>mFormant Consulting Homepage</title>
       </Head>
       <AppShell
         styles={{ main: { backgroundColor: "inherit", color: "inherit" } }}
