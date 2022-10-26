@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@brammitch/plotly-react": "0.1.5",
+    "@brammitch/plotly-react": "0.2.0",
     "@mantine/core": "4.2.12",
     "@mantine/hooks": "4.2.12",
     "@mantine/next": "4.2.12",
